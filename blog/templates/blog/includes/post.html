@@ -1,0 +1,14 @@
+{% load static %}
+
+<!--This code snippet is used to display a single post preview card. It includes the image, title, and content of the post. Theses variables are passed from the view function to the template using context variables.-->
+<li> <!--These are post preview cards-->
+    <article class="post">
+        <a href="{% url 'post_detail_page' post.slug %}">
+            <img src="{% static 'blog/images/'|add:post.image %}" alt="{{post.title}}">
+            <div class="post-content">
+                <h3>{{ post.title }}</h3>
+                <p>{{post.excerpt}} </p>
+            </div>
+        </a>
+    </article>
+</li>

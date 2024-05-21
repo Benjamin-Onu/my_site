@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    My Blog - Home
+{% endblock title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'blog/includes/post.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/index.css' %}">
+{% endblock %}
+{% block content %}
+    <section id="welcome">
+        <header>
+            <img src="{% static 'blog/images/ben.jpg' %}" alt="The Author of This Blog">
+            <h2>BENJAMIN'S BLOG</h2>
+        </header>
+        <p>Welcome to my blog! This is where I will be posting my thoughts and experiences as I learn and grow as a developer.</p>
+    </section>
+   
+    <section id="latest-posts">
+        <h2>Latest Posts</h2>
+        <ul>
+             {% comment %} Loop through the latest 5 posts. This will be done using a Django template tag and you will pass a parameter probably the current date and time and the number of posts to display. 
+            
+            This is like a select query in SQL. You can use Django's ORM to query the database and get the latest posts.
+            This will include the post.html file and pass the post object to it. How to include with a variable in Django? You can use the include tag and pass a variable as the argument. For example: {% include "blog/includes/post.html" with post=post %}. This will pass the post object to the post.html file.                 {% endcomment %}
+            {% for post in posts %}
+                {% include "blog/includes/post.html" with post=post %}
+            {% endfor %}
+        </ul>
+    </section>
+
+   <section id="about">
+       <h2>About Me</h2>
+       <p>Hi, my name is Benjamin. I am a web developer and I enjoy learning new technologies and applying them to create amazing websites and applications. I am currently working as a web developer at a small company in the Silicon Valley. I am also a hobbyist photographer and enjoy taking photos of nature and landscapes.</p>
+
+       <p>My goal is to create a blog that will help others learn and grow as developers. I hope you enjoy reading my blog posts and learn something new!</p>
+   </section>
+
+
+{% endblock %}
