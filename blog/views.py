@@ -27,6 +27,7 @@ def post_detail(request, slug):
     # identified_post = next(post for post in all_posts if post['slug'] == slug)
     identified_post = Post.objects.get(slug=slug) # get the post with the specified slug from the database
     context = {
-        'post': identified_post
+        'post': identified_post,
+        'post_tags': identified_post.tag.all() # retrieve all tags associated with the post
     }
     return render(request, 'blog/post-detail.html', context) 
