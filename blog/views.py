@@ -113,8 +113,7 @@ class createNewPost(CreateView):
 
 # To be implemented in the future
 class SearchPostsView(View):
-    # It will be called if the user searches for a post using the search bar on the all-posts.html page
-    # and on the index.html page.
+    # db_index will be key to search in the database. It will be used to improve the search performance.
     model = Post
     template_name = 'blog/search-posts.html'
     context_object_name = 'search_results'
