@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from blog.models import Post, Author, Tag, Comment
 from .forms import CommentForm, PostForm
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 # These are the posts that will be displayed on the blog page, it will be stored in a database in the future.
@@ -22,46 +23,61 @@ class IndexView(ListView):
     # It fetches all the posts from the database and displays them on the index.html page
     model = Post
     template_name = 'blog/index.html'
-    context_object_name = 'latest_posts'
+    context_object_name = 'posts' # right now there's no limit to 3 posts,
+    # but we can set a limit to 3 posts using the get_queryset method
     ordering = ['-date']
-    # queryset = Post.objects.all().order_by('-date')[:3] # Django converts the query into an SQL code and it takes into account the limit and offset parameters.
+
+    def get_queryset(self):
+        query_set = super().get_queryset()
+        return query_set[:3]
+  
 
 class PostListView(ListView):
     # It fetchs all the posts from the database and displays them on the all-posts.html page
     model = Post
     template_name = 'blog/all-posts.html'
     context_object_name = 'all_posts'
+    ordering = ['-date']
 
-def post_detail(request, slug):
-    # next is a built-in function that returns the next item in an iterable if it matches a condition
-    # identified_post = next(post for post in all_posts if post['slug'] == slug)
-    identified_post = Post.objects.get(slug=slug) # get the post with the specified slug from the database
+class PostDetailView(DetailView):
+    # It fetches a single post from the database and displays it on the post-detail.html page
+    # If the url contains a slug, it will fetch the post with that slug from the database. It will do that automatically.
+    model = Post
+    template_name = 'blog/post-detail.html'
+    context_object_name = 'post'
 
-    comments = display_comments(request, slug)
-    comment_count = comments.count()
-    form = CommentForm()
-    # retrieve the number of comments there 
-    # Add a comment button that make the 
-    context = {
-        'post': identified_post,
-        'post_tags': identified_post.tag.all(), # retrieve all tags associated with the post
-        'count': comment_count,
-        'form': form,
-        'comments' : comments, # retrieve all comments associated with the post
-        # 'comment_count': comment_count
+    def display_comments(self, slug):
+        identified_post = Post.objects.get(slug=slug)
+        comments = Comment.objects.filter(post=identified_post)
+        return comments
+    
+    def add_comment(self,request, slug):
+        identified_post = Post.objects.get(slug=slug)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            new_comment = Comment(post=identified_post, author=request.user, content=form.cleaned_data['content'])
+            new_comment.save()
+            return HttpResponseRedirect(reverse_lazy('blog:post-detail', kwargs={'slug': slug}))
+        else:
+            return render(request, 'blog/add-comment.html', {'form': form})
 
-    }
-    return render(request, 'blog/post-detail.html', context) 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        comments = self.display_comments(self.kwargs['slug'])
+        comment_count = comments.count()
+        context['count'] = comment_count
+        context['comments'] = comments
+        context['post_tags'] = self.object.tag.all()
+        context['comment_form'] = CommentForm()
 
-def add_comment(request, slug):
-    identified_post = Post.objects.get(slug=slug)
-    # form = CommentForm(request.POST)
+        return context
 
-def display_comments(request, slug):
-    identified_post = Post.objects.get(slug=slug)
-    comments = Comment.objects.filter(post=identified_post)
-    return comments
-
+class addComment(CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = 'blog/add-comment.html'
+    success_url = 'blog/posts/' # this should redirect the user to the post-detail page after the comment is added. 
+    # but currently it just lists all the posts again.
 
 class createNewPost(CreateView):
     model = Post

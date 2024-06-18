@@ -30,21 +30,48 @@
     <main>
         <p>{{ post.content|linebreaks }}</p>
         <div id="comment-btn">
-            <button>Comment {{ count }}</button>
+            <button>Comment ({{ count }})</button>
         </div>
+
+        <section id="comments">
+            {% comment %} for comment in comments {% endcomment %}
+            {% for comment in comments %}
+                <div class="comment">
+                    <h3>{{ comment.name }}</h3>
+                    <p>{{ comment.body }}</p>
+                    <div>
+                        <time>{{ comment.date|date:"d M Y" }}</time>
+                    </div>
+    
+                </div>
+            {% empty %}
+                <p>No comments yet.</p>
+            {% endfor %}
+
+            <button id="close-comment">Close</button>
+        </section>
+
     </main>
-
-
-    <section id="comments">
-
-        {% comment %} <button id="comment-btn">Comment {{ post.comments.count }}</button> {% endcomment %}
+    <section id="comment-form">
+        {{ comment_form }}
+        <button type="submit">Leave Comment</button>
     </section>
+
+    
+    {% comment %} <section id="comment-form">
+        <button> Comment </button>
+    </section> {% endcomment %}
     <script>
         const commentBtn = document.querySelector('#comment-btn');
-        let commentSection = document.querySelector('#comments');
-        commentBtn.addEventListener('click', () => {
-            window.location.href = '{% url "blog:comment-create" post.slug %}';
-
+        const commentSection = document.querySelector('#comments');
+        const closeCommentBtn = document.querySelector('#close-comment');
+        commentSection.style.display = 'none';
+        
+        commentBtn.addEventListener('click', function(e) {
+          commentSection.style.display = 'block';
+        });
+        closeCommentBtn.addEventListener('click', function(e) {
+          commentSection.style.display = 'none';
         });
     </script>
 {% endblock content %}

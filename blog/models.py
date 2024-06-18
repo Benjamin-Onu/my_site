@@ -48,7 +48,7 @@ class Comment(models.Model):
     name = models.CharField(max_length=100, null=True) # this name will normally be the user account name but they will enter their name manually.
     body = models.TextField(null=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', null=True) # there's total participation on the comment side of the relationship hence null values on the post field is not allowed. Django doesn't let us implement this.
-    # timeline = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.name

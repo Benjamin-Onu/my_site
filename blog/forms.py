@@ -4,8 +4,8 @@ from.models import Comment, Post
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['body']
-        labels = {'body': 'What are your thoughts?'}
+        exclude = ['post']
+        labels = {'user_name' : 'Your Name', 'body': 'Your Thoughts?'}
 
 class PostForm(forms.ModelForm):
     class Meta:

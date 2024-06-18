@@ -71,3 +71,24 @@ body {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   }
+
+  /* Idea: leave this piece of code in an includes file as it is repeated in create-post and post-detail css pages */
+button {
+    cursor: pointer;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    background-color: #1f0050;
+    color: white;
+    border: 1px solid #1f0050;
+}
+
+button:hover,
+button:active {
+    background-color: #3c2463;
+    border-color: #3c2463;
+}
+
+.comment {
+  background-color: aquamarine;
+}
