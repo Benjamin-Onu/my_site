@@ -47,11 +47,6 @@ class PostDetailView(View):
     template_name = 'blog/post-detail.html'
     context_object_name = 'post'
 
-    def display_comments(self, slug):
-        identified_post = Post.objects.get(slug=slug)
-        comments = Comment.objects.filter(post=identified_post)
-        return comments
-
     def get(self, request, slug):
         identified_post = Post.objects.get(slug=slug)
         comments = Comment.objects.filter(post=identified_post)
@@ -66,10 +61,10 @@ class PostDetailView(View):
     
     def post(self, request, slug):
         identified_post = Post.objects.get(slug=slug)
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            new_comment = Comment(post=identified_post, author=request.user, content=form.cleaned_data['content'])
-            new_comment.save()
+        commentForm = CommentForm(request.POST)
+        if commentForm.is_valid():
+            commentForm.save() # It's a model form, so it saves the data to the database. You don't have to create a new object.
+            
             return HttpResponseRedirect(reverse_lazy('blog:post-detail', kwargs={'slug': slug}))
         else:
             return render(request, 'blog/add-comment.html', {'form': form})
