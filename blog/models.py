@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
 
+
 # Create your models here.
 class Tag(models.Model):
     caption = models.CharField(max_length=50)
@@ -24,7 +25,8 @@ class Author(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=200)
     # image = models.ImageField(upload_to='static/blog/images/') # upload_to is the directory where the image will be saved, upload_to will handle file uploads
-    image_name = models.CharField(max_length=100)
+    image_name = models.ImageField(upload_to='posts', null=True) # upload_to is the directory where the image will be saved, upload_to will handle file uploads
+    # to display the image in the template, we can use the following code: use the url attribute of the image field to display the image in the template. # <img src="{{ post.image.url }}" alt="{{ post.title }}">
     excerpt = models.CharField(max_length=200)
     content = models.TextField(validators=[MinLengthValidator(10)]) 
     date = models.DateField(auto_now=True)
@@ -32,6 +34,21 @@ class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, related_name='posts') # one author can have many posts
     tag = models.ManyToManyField(Tag, related_name='tags') # one post can have many tags
 
+    def __str__(self):
+        return self.title
 
 
- 
+# We would also like to add a feature to allow users to comment on posts. This can be done using a comment form on each post. We can create a comment model and a comment form on the post.html file. The comment form will submit the comment to the database.
+
+# We would introduce another model for comments. This would be a one-to-many relationship between posts and comments. 
+# And it will include fields like name, email, and content. It will be implemented using modelForms.
+
+class Comment(models.Model):
+    # id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=100, null=True) # this name will normally be the user account name but they will enter their name manually.
+    body = models.TextField(null=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments', null=True) # there's total participation on the comment side of the relationship hence null values on the post field is not allowed. Django doesn't let us implement this.
+    # timeline = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name

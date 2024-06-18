@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    New Post
+{% endblock title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'blog/create-post.css' %}">
+{% endblock %}
+
+{% block content %}
+    {% comment %} For now go to the admin and update the images manually, add new authors 
+    
+    NEW FEATURE TO BE IMPLEMENTED:
+    For now, If there's to be an edit, add a platform for the user to update the post. Currently, the site owner will go to the admin and update the post.
+    Before the user can edit he would have to enter his email address and if the email is verified, he can edit the post.
+
+    But ideally sites like Medium or Dev.to would already have users create their own accounts and allow them to edit their posts. As long as you're logged in, you are the author of your own post.
+
+    Sign in to be an author or view other authors' posts.
+    This will require a new model for authors and login system/app. You can test out django-allauth for this. Try out implementing login with google or even with medium. Sign in information to extract from the user's social media account are username, email. You can use this information to create a new author object and associate it with the user's post.
+
+
+    Next is that we would add a search functionality to the blog. This can be done using Django's built-in search functionality. We can create a search form and a search view. The search view will query the database for posts that match the search query and display them on the search results page.
+
+    {% endcomment %}
+
+    <section id="create-post">
+        <form action="/" method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-control"> 
+                    {{ field.label_tag }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <button type="submit">Publish</button>
+        </form>
+    </section>
+{% endblock %}

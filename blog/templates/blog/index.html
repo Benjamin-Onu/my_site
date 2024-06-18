@@ -16,6 +16,8 @@
             <h2>BENJAMIN'S BLOG</h2>
         </header>
         <p>Welcome to my blog! This is where I will be posting my thoughts and experiences as I learn and grow as a developer.</p>
+
+        <p></p>
     </section>
    
     <section id="latest-posts">
@@ -40,3 +42,14 @@
 
 
 {% endblock %}
+
+{% comment %} 
+So far the blog has models for posts, categories, and tags. And we upload images manually to the server. 
+
+We would like to add a feature to allow users to upload images directly from the blog. This can be done using Django's file handling functionality. We can create a form on the post.html file that allows users to upload an image. The form will submit the image to the server and store it in the media folder. We can then display the image on the post page.
+
+We would also add a "Read Later" feature to the blog using sessions. This will allow users to save posts to read later. We can create a session variable to store the post ids and display them on the "Read Later" page.
+
+We would also like to add a feature to allow users to create categories and tags. This can be done using a form on the admin page. We can create a category and tag model and a form on the admin page. The form will submit the category or tag to the database.
+
+{% endcomment %}

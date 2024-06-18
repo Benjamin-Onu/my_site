@@ -12,7 +12,8 @@
         <header id="main-navigation">
             <h1><a href="{% url 'starting_page' %}">Ben's Blog</a></h1>
             <nav>
-               <a href="{% url 'posts_page' %}">All Posts</a>
+               <a href="{% url 'posts_page' %}" style="margin: 5px;">All Posts</a>
+               <a href="{% url 'create_post' %}" style="margin: 5px;">Write Post</a>
             </nav>
         </header>
         {% block content %}{% endblock %}
