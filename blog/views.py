@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from blog.models import Post, Author, Tag, Comment
 from .forms import CommentForm, PostForm
+from django.views import View
 from django.views.generic import CreateView, ListView, DetailView
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
@@ -39,7 +40,7 @@ class PostListView(ListView):
     context_object_name = 'all_posts'
     ordering = ['-date']
 
-class PostDetailView(DetailView):
+class PostDetailView(View):
     # It fetches a single post from the database and displays it on the post-detail.html page
     # If the url contains a slug, it will fetch the post with that slug from the database. It will do that automatically.
     model = Post
@@ -50,8 +51,20 @@ class PostDetailView(DetailView):
         identified_post = Post.objects.get(slug=slug)
         comments = Comment.objects.filter(post=identified_post)
         return comments
+
+    def get(self, request, slug):
+        identified_post = Post.objects.get(slug=slug)
+        comments = Comment.objects.filter(post=identified_post)
+        context = {
+            'post': identified_post,
+            'comments': comments,
+            'comment_form': CommentForm(),
+            'post_tags': identified_post.tag.all(),
+            'count' : comments.count()
+        }
+        return render(request, self.template_name, context)
     
-    def add_comment(self,request, slug):
+    def post(self, request, slug):
         identified_post = Post.objects.get(slug=slug)
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -61,16 +74,7 @@ class PostDetailView(DetailView):
         else:
             return render(request, 'blog/add-comment.html', {'form': form})
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        comments = self.display_comments(self.kwargs['slug'])
-        comment_count = comments.count()
-        context['count'] = comment_count
-        context['comments'] = comments
-        context['post_tags'] = self.object.tag.all()
-        context['comment_form'] = CommentForm()
-
-        return context
+    
 
 class addComment(CreateView):
     model = Comment

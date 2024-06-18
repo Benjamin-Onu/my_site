@@ -30,7 +30,7 @@
     <main>
         <p>{{ post.content|linebreaks }}</p>
         <div id="comment-btn">
-            <button>Comment ({{ count }})</button>
+            <button>Comments ({{ count }})</button>
         </div>
 
         <section id="comments">
@@ -53,14 +53,22 @@
 
     </main>
     <section id="comment-form">
-        {{ comment_form }}
-        <button type="submit">Leave Comment</button>
+        <h2>Your Comment</h2>
+        {% comment %} Reload the same page with the form data showing the error messages {% endcomment %}
+        <form action="{% url 'post_detail_page' post.slug %}" method="POST" >
+            {% csrf_token %}
+            {% for form_field in comment_form %}
+                <div class="form-control">
+                    {{ form_field.label_tag }}
+                    {{ form_field }}
+                    {{ form_field.errors }}
+                </div>
+            {% endfor %}
+            <button>Save Comment</button>
+        </form>
     </section>
 
-    
-    {% comment %} <section id="comment-form">
-        <button> Comment </button>
-    </section> {% endcomment %}
+
     <script>
         const commentBtn = document.querySelector('#comment-btn');
         const commentSection = document.querySelector('#comments');
