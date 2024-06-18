@@ -10,6 +10,27 @@
 {% endblock %}
 
 {% block content %}
+
+    {% comment %} Django forms do add the required attribute to the fields, so we don't need to add it here. We just need extra validation. {% endcomment %}
+
+    {% if comment_form.errors %}
+        <div id="alert">
+            <p> Saving Comment Failed </p>
+            <p>Please look at the comment form and correct the errors below:</p>
+            <ul>
+                {% for field in comment_form %}
+                    {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error|escape }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in comment_form.non_field_errors %}
+                    <li>{{ error|escape }}</li>
+                {% endfor %}
+            </ul>
+            <a href="#comment-form">Fix</a>
+        </div>
+    {% endif %}
+
     <section id="summary">
         <h2>{{ post.title|title }}</h2>
         <div>
@@ -17,6 +38,16 @@
                 <span class="tags">{{ tag.caption }}</span>
             {% endfor %}
         </div>
+        <div id="read-later">
+            <form action="/posts/read-later/" method="POST">
+                {% comment %} We interpolate the review id into the value as it will be the "to- be favorite"
+                The name will be the key in the POST data {% endcomment %}
+                {% csrf_token %}
+                <input type="hidden" name="post_slug" value="{{ post.slug }}">
+                <button>Read Later</button>
+            </form>
+        </div>
+        
         <article>
             <img src="{{ post.image_name.url }}" alt="{{ post.title }}">
             <address>
@@ -27,6 +58,8 @@
             </div>
         </article>
     </section>
+    {% comment %} If the comment form has errors, show them here {% endcomment %}
+    
     <main>
         <p>{{ post.content|linebreaks }}</p>
         <div id="comment-btn">
@@ -42,7 +75,7 @@
                     <div>
                         <time>{{ comment.date|date:"d M Y" }}</time>
                     </div>
-    
+                    <hr>
                 </div>
             {% empty %}
                 <p>No comments yet.</p>
@@ -58,7 +91,7 @@
         <form action="{% url 'post_detail_page' post.slug %}" method="POST" >
             {% csrf_token %}
             {% for form_field in comment_form %}
-                <div class="form-control">
+                <div class="form-control {% if form_field.errors %} invalid {% endif %}">
                     {{ form_field.label_tag }}
                     {{ form_field }}
                     {{ form_field.errors }}
@@ -81,5 +114,10 @@
         closeCommentBtn.addEventListener('click', function(e) {
           commentSection.style.display = 'none';
         });
+        // Try using toggle for the button instead of having two buttons
+
+        //commentBtn.addEventListener('click', function(e) {
+        //   commentSection.classList.toggle('show');
+        //});
     </script>
 {% endblock content %}
