@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+   My Stored Posts
+{% endblock title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'blog/stored-posts.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <section id="stored-posts">
+        {% if has_posts %}
+            <h1>My Stored Posts</h1>
+            <ul>
+                {% for post in posts %}
+                    <li><a href="{% url 'post_detail_page' post.slug %}"><h2>{{ post.title }}</h2></a></li>
+                        {% comment %} <img src="{{ post.image_name.url }}" alt="{{ post.title }}"> {% endcomment %}
+                {% endfor %}
+            </ul>
+            
+        {% else %}
+            <p>You haven't stored any posts yet.</p>
+        {% endif %}
+    </section>
+{% endblock content %}

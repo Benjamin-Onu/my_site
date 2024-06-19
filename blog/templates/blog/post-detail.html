@@ -39,12 +39,18 @@
             {% endfor %}
         </div>
         <div id="read-later">
-            <form action="/posts/read-later/" method="POST">
+            <form action="/read_later/" method="POST">
                 {% comment %} We interpolate the review id into the value as it will be the "to- be favorite"
                 The name will be the key in the POST data {% endcomment %}
                 {% csrf_token %}
-                <input type="hidden" name="post_slug" value="{{ post.slug }}">
-                <button>Read Later</button>
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+                <button>
+                    {% if is_saved_for_later %}
+                        Remove from "Read Later" List
+                    {% else %}
+                        Read Later
+                    {% endif %}
+                </button>
             </form>
         </div>
         

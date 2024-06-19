@@ -37,15 +37,27 @@ class PostDetailView(View):
     template_name = 'blog/post-detail.html'
     context_object_name = 'post'
 
+    def is_stored_post(self, request, post_id):
+        stored_post = request.session.get('stored_posts')
+        # This is to check if the post is saved for later. It will check if the post id is in the stored_post list in the session. Therefore won't display the save for later button if the post is already saved for later.
+        if stored_post is not None:
+            is_saved_for_later = post_id in stored_post
+        else:
+            is_saved_for_later = False
+        return is_saved_for_later
+    
     def get(self, request, slug):
         identified_post = Post.objects.get(slug=slug)
         comments = Comment.objects.filter(post=identified_post)
+        is_saved_for_later = self.is_stored_post(request, identified_post.id)
+
         context = {
             'post': identified_post,
             'comments': comments,
             'comment_form': CommentForm(),
             'post_tags': identified_post.tag.all(),
-            'count' : comments.count()
+            'count' : comments.count(),
+            'is_saved_for_later': is_saved_for_later
         }
         return render(request, self.template_name, context)
     
@@ -63,42 +75,54 @@ class PostDetailView(View):
         
         # If the form is not valid, it will display the form with the errors
         comments = Comment.objects.filter(post=identified_post).order_by('-date')
+        is_saved_for_later = self.is_stored_post(request, identified_post.id)
+
         context = {
             'post': identified_post,
             'comments': comments,
             'comment_form': commentForm, # It will display the form with the errors
             'post_tags': identified_post.tag.all(),
-            'count' : comments.count()
+            'count' : comments.count(),
+            'is_saved_for_later': is_saved_for_later
         }
+
         return render(request, self.template_name, context)
+
 class ReadLaterView(View):
-    # It fetches all the saved posts from the database and displays them on the saved-posts.html page
-    # sessions are user specific. 
-    model = Post
-    template_name = 'blog/saved-posts.html'
-    context_object_name = 'saved_posts'
+    def get(self, request):
+        stored_posts = request.session.get("stored_posts")
+
+        context = {}
+
+        if stored_posts is None or len(stored_posts) == 0:
+            context["posts"] = []
+            context["has_posts"] = False
+        else:
+          posts = Post.objects.filter(id__in=stored_posts)
+          context["posts"] = posts
+          context["has_posts"] = True
+
+        return render(request, "blog/stored-posts.html", context)
+
 
     def post(self, request):
-        requested_post = request.POST.get('post_slug')
-        stored_posts = request.session.get('stored_posts') 
-        if stored_posts is None:
-            stored_posts = []
-            
-        if requested_post not in stored_posts:
-            stored_posts.append(int(requested_post))
-            request.session['stored_posts'] = stored_posts
-        return HttpResponseRedirect(reverse('saved_posts_page'))
+        stored_posts = request.session.get("stored_posts")
 
-   
-class SavedPostsView(View):
-    template_name = reverse_lazy('read-later')
-    def get(self, request):
-        stored_posts = request.session.get('stored_posts')
-        saved_posts = Post.objects.filter(slug__in=stored_posts)
-        context = {
-            'saved_posts': saved_posts
-        }
-        return render(request, self.template_name, context)
+        if stored_posts is None:
+          stored_posts = []
+
+        post_id = int(request.POST["post_id"])
+
+        # If the post is already saved for later, it will remove it from the list. Otherwise, it will add it to the list.
+        # As the button is set based on if the post is saved for later or not, it will update the button accordingly.
+        if post_id not in stored_posts:
+          stored_posts.append(post_id)
+        else:
+          stored_posts.remove(post_id)
+
+        request.session["stored_posts"] = stored_posts
+        
+        return HttpResponseRedirect("/")
 
 
 # To be implemented in the future
