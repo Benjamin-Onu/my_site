@@ -21,3 +21,9 @@ This is a Django project
 - A very efficient and basic search engine for the blog app
 - A user authentication system for the blog app
 - An Update System for posts in the blog app
+
+
+## New terminal things learnt
+create a .gitignore file
+To untrack the files that shouldn't be commited :
+git rm -r --cached env/
