@@ -45,12 +45,22 @@
 
 {% comment %} 
 
-We would also add a "Read Later" feature to the blog using sessions. This will allow users to save posts to read later. We can create a session variable to store the post ids and display them on the "Read Later" page.
-
-We need a read later page that displays the saved posts. We can create a separate view for this page and display the saved posts using a loop. 
-
-We can also add a button to the post page to save the post to the read later page.
-
 We would also like to add a feature to allow users to create categories and tags. This can be done using a form on the admin page. We can create a category and tag model and a form on the admin page. The form will submit the category or tag to the database.
+
+Ideas 
+- Having a Docker container for the blog that can be deployed to a cloud provider like AWS or Google Cloud. 
+- Creating a Dockerfile and a docker-compose.yml file to build and run the blog in a container. 
+
+How to generate requirements.txt file? 
+- pip freeze > requirements.txt 
+For this specific project, we can use pipenv to manage dependencies and generate the requirements.txt file. 
+- pipenv install --dev 
+- pipenv lock -r > requirements.txt 
+
+How to create a virtual environment? 
+- python -m venv env 
+source env/bin/activate 
+env/Scripts/activate (Windows) 
+To exit the virtual environment, use the command "deactivate". 
 
 {% endcomment %}
