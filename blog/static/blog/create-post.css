@@ -62,3 +62,18 @@ button:active {
     margin-bottom: 0.5rem;
     font-weight: bold;
 }
+
+.errorlist {
+    color: #680000;
+    margin: 0.5rem 0;
+    padding: 0;
+    list-style: none;
+}
+
+.errors input{
+    border-color: #680000;
+    background-color: #fde3e3;
+}
+.errors label{
+    color: #680000;
+}

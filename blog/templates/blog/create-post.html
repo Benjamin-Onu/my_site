@@ -28,14 +28,16 @@
     {% endcomment %}
 
     <section id="create-post">
-        <form action="/" method="POST">
+        <form action="{% url 'create_post' %}" method="POST" enctype="multipart/form-data">
+            {% comment %} enctype is used to allow file uploads, It helps you send both text and binary data in the same request. In this case, it is multipart/form-data cause we are uploading an image. {% endcomment %}
             {% csrf_token %}
             {% for field in form %}
-                <div class="form-control"> 
+                <div class="form-control {% if field.errors %} errors {% endif %}"> 
                     {{ field.label_tag }}
                     {{ field }}
                 </div>
             {% endfor %}
+            {% comment %} Bug so far the image upload doesn't work. {% endcomment %}
             <button type="submit">Publish</button>
         </form>
     </section>

@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinLengthValidator
+from django.utils.text import slugify
 
 
 # Create your models here.
@@ -36,6 +37,19 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+    # TO do
+    # We have to slugify the title field to create a unique slug for each post.
+    # We can use the slugify function from django.utils.text to create a slug from the title. 
+    # This will create a slug when the form is saved.
+    def save(self, *args, **kwargs):
+        # self.slug = self.title.lower().replace(" ", "-")
+        # slugify() function is used to create a slug from the title
+        # slugify() function takes a string and returns a slugified version of it.
+        # slugify() function replaces spaces with hyphens and converts the string to lowercase.
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+        # args and kwargs are used to pass arguments to the parent class's save() method.
 
 
 # We would also like to add a feature to allow users to comment on posts. This can be done using a comment form on each post. We can create a comment model and a comment form on the post.html file. The comment form will submit the comment to the database.

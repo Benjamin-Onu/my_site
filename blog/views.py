@@ -3,9 +3,12 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.urls import reverse_lazy
 from blog.models import Post, Comment
-from .forms import CommentForm, PostForm
+from .forms import CommentForm, PostForm, PostImageForm
 from django.views import View
 from django.views.generic import CreateView, ListView
+
+from django.contrib import messages
+from django.contrib.auth.models import User, auth
 
 
 # Create your views here.
@@ -126,13 +129,65 @@ class ReadLaterView(View):
 
 
 # To be implemented in the future
-class createNewPost(CreateView):
+class createNewPost2(CreateView):
     model = Post
     form_class = PostForm
     # fields = ['title', 'content', 'author', 'tag']
     template_name = 'blog/create-post.html'
-    success_url = reverse_lazy('posts_page')
+    success_url = '/blog/all-posts.html'
     # reverse_lazy is used to avoid circular import. It will redirect to the posts_page after the post is created.
+
+class createNewPost(View):
+    def get(self, request):
+        form = PostForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'blog/create-post.html', context)
+
+    def post(self, request):
+        form = PostForm(request.POST, request.FILES)
+        # image is the issue here 
+        print(request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.image_name = request.FILES['image_name']
+            # post.author = request.user # By default, it will set the author to the current user.
+            # request.user.post_set.add(post)
+            form.save()
+            '''
+            from django.contrib.auth.decorators import login_required
+
+            from django.cntrib.auth.models import User, auth
+            from django.contirb import messages
+
+            @login_required
+            def add_post_preview(request):
+                if request.method == 'POST':
+                    form = PostForm(request.POST, request.FILES)
+                    if form.is_valid():
+                        post = form.save(commit=False)
+                        post.image_name = request.FILES['image']
+                        post.author = request.user
+                        request.user.post_set.add(post)
+                        post.save()
+                        return redirect('add_post_preview')
+                    else:
+                        context = {'form': form }
+                        return render(request, 'blog/create-post.html', context)
+                else:
+                    form = PostForm()
+                    context = {
+                        'form': form
+                    }
+                    return render(request, 'blog/create-post.html', context)
+            
+            '''
+            return HttpResponseRedirect(reverse('posts_page'))
+        else:
+            context = {'form': form }
+            return render(request, 'blog/create-post.html', context)
+
 
 
 # To be implemented in the future
@@ -156,3 +211,55 @@ class SearchPostsView(View):
         else:
             message = "No posts found on this topic."
             return HttpResponseRedirect(reverse('posts_page'))
+
+# All future stuff
+
+class RegisterAsAuthorView(View):
+    def get(self, request):
+        return render(request, 'blog/register-as-author.html')
+
+    def post(self, request):
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        password2 = request.POST['password2']
+
+        if password != password2:
+            messages.error(request, 'Passwords do not match.')
+            return HttpResponseRedirect(reverse('register_as_author'))
+        else: 
+            # The users would be registered authors
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Username already taken.')
+                return HttpResponseRedirect(reverse('register_as_author'))
+            elif User.objects.filter(email=email).exists():
+                messages.error(request, 'Email already taken.')
+                return HttpResponseRedirect(reverse('register_as_author'))
+            else:
+                user = User.objects.create_user(username=username, email=email, password=password)
+                user.save()
+
+
+        # create user account
+        # login user
+        # redirect to dashboard
+        return HttpResponseRedirect(reverse('dashboard'))
+    
+
+class DashboardView(View):
+    def get(self, request):
+        return render(request, 'blog/dashboard.html')
+    
+class LoginView(View):
+    def get(self, request):
+        return render(request, 'blog/login.html')
+
+    def post(self, request):
+        username = request.POST['username']
+        password = request.POST['password']
+
+        # check if user exists
+        # check if password is correct
+        # login user
+        # redirect to dashboard
+        return HttpResponseRedirect(reverse('dashboard'))
