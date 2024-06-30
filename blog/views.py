@@ -3,9 +3,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.urls import reverse_lazy
 from blog.models import Post, Comment
-from .forms import CommentForm, PostForm, PostImageForm
+from .forms import CommentForm, PostForm
 from django.views import View
 from django.views.generic import CreateView, ListView
+from django.views.generic.edit import UpdateView
 
 from django.contrib import messages
 from django.contrib.auth.models import User, auth
@@ -194,15 +195,21 @@ class createNewPost(View):
 class SearchPostsView(View):
     # db_index will be key to search in the database. It will be used to improve the search performance.
     model = Post
-    template_name = 'blog/search-posts.html'
+    template_name = 'blog/search.html'
     context_object_name = 'search_results'
 
     # The search query will be passed as a GET parameter in the url.
     # the key will be 'query' and the value will be the search query. 'query' will be the name of the input field in the form.
-    def get(self, request):
+    def get(self, request, query):
         query = request.GET.get('query')
+        # What if the query is a request from AJAX?
+        # We can use the following code to get the query from AJAX request.
+        # query = request.GET.get('query', None)
+        # if query is None:
+        #     query = request.POST.get('query', None)
         if query:
             search_results = Post.objects.filter(title__icontains=query)
+            response_text = ""
             context = {
                'search_results': search_results,
                 'query': query
@@ -214,52 +221,53 @@ class SearchPostsView(View):
 
 # All future stuff
 
-class RegisterAsAuthorView(View):
-    def get(self, request):
-        return render(request, 'blog/register-as-author.html')
+# The admin can only add authors to the database.
+# If you want to delete a post, you can do it from the admin page.
+# So far it's only Create and Read views.
+# That's the restriction for now.
 
-    def post(self, request):
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        password2 = request.POST['password2']
+# What is an UpdateView? It's a generic view that allows you to update a model instance.
+class EditPostView(UpdateView):
+    # We will use this view to edit a post.
+    model = Post
+    form_class = PostForm
+    template_name = 'blog/edit-post.html'
+    success_url = reverse_lazy('posts_page')
 
-        if password != password2:
-            messages.error(request, 'Passwords do not match.')
-            return HttpResponseRedirect(reverse('register_as_author'))
-        else: 
-            # The users would be registered authors
-            if User.objects.filter(username=username).exists():
-                messages.error(request, 'Username already taken.')
-                return HttpResponseRedirect(reverse('register_as_author'))
-            elif User.objects.filter(email=email).exists():
-                messages.error(request, 'Email already taken.')
-                return HttpResponseRedirect(reverse('register_as_author'))
-            else:
-                user = User.objects.create_user(username=username, email=email, password=password)
-                user.save()
+    # We want to render the form with the current data of the post.
+    def get(self, request, *args, **kwargs):
+        post = self.get_object()
+        form = self.get_form()
+        context = {
+            'form': form,
+            'post': post
+        }
 
+    # This will be a PUT or a PATCH request.
+    # It will update the post with the new data.
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
-        # create user account
-        # login user
-        # redirect to dashboard
-        return HttpResponseRedirect(reverse('dashboard'))
-    
+class DeleteObjectView(View):
+    '''
+    This method will delete a post or a comment based on the content type.
+    Delete is a post request because it is sending data to the server.
+    '''
+    def post(self, request, content):
+        if content == 'post':
+            post = Post.objects.get(id=request.GET['id'])
+            post.delete()
+            messages.success(request, "Post deleted successfully.")
+            return HttpResponseRedirect(reverse('posts_page'))
+        elif content == 'comment':
+            comment = Comment.objects.get(id=request.GET['id'])
+            comment.delete()
+            messages.success(request, "Comment deleted successfully.")
+            return HttpResponseRedirect(reverse('post_detail_page', args=[comment.post.slug]))
+        else:
+            messages.error(request, "Invalid content type.")
+            return HttpResponseRedirect(reverse('posts_page'))
 
-class DashboardView(View):
-    def get(self, request):
-        return render(request, 'blog/dashboard.html')
-    
-class LoginView(View):
-    def get(self, request):
-        return render(request, 'blog/login.html')
-
-    def post(self, request):
-        username = request.POST['username']
-        password = request.POST['password']
-
-        # check if user exists
-        # check if password is correct
-        # login user
-        # redirect to dashboard
-        return HttpResponseRedirect(reverse('dashboard'))
+# This could be done using a group machine learning algorithm.
+# K means clustering algorithm could be used to group the posts based on certain similarities it discovers.
+# It'll be nice to have a feature like this in the future which involves some machine learning.

@@ -10,12 +10,15 @@ Here are the steps to implement a search feature for the blog app:
 
 2. Create the search form: We can create a search form that allows users to enter search terms.
 
-3. Implement the search functionality: We need to implement the search functionality using a search engine such as Elasticsearch or Solr.
+3. Implement the search functionality: We need to implement the search functionality using a search engine such as Elasticsearch or Solr. We will implement great search algorithms like Elasticsearch or Binary Search due to how efficient they are. We can use Python libraries like Elasticsearch-dsl or Flask-Elasticsearch to integrate Elasticsearch into our Django app.
 
 4. Display the search results: We need to display the search results on the blog page.
 
 ### From Researches
 The implementation of sophisticated search methods in databases is typically considered when the number of records reaches a level where basic search techniques become inefficient. This threshold can vary based on several factors, including the database system in use, the hardware capabilities, and the complexity of the queries. Here are some guidelines for when to consider more advanced search methods:
+
+### Search Engine Indexing
+Search engine indexing collects, parses, and stores data to facilitate fast and accurate information retrieval. The purpose of storing an index is to optimize speed and performance in finding relevant documents for a search query. Without an index, the search engine would scan every document in the corpus, which would require considerable time and computing power
 
 ### Small to Medium-Sized Databases
 - **Up to 100,000 records:** Simple indexing, such as B-trees or hash indexes, is usually sufficient. Full table scans might still be performant depending on query complexity and hardware.

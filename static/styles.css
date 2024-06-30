@@ -47,3 +47,35 @@ h3 {
 #main-navigation h1 a:active {
   color: white;
 }
+
+.search-container input{
+  width: 0px;
+  border: none;
+  outline: none;
+}
+.search-container .fas{
+  color: #000;
+  font-size: 1.3rem;
+  padding: 10px 5px;
+}
+.search-container .fas:hover{
+  cursor: pointer;
+  color: #333;
+}
+.search-container .active-search{
+  width: 80px;
+  border-radius: 12px;
+  border: 1px solid gray;
+  padding: 10px 5px;
+  transition: 0.3s width ease-in;
+  font-size: 16px;
+  box-sizing: 0 1px 5px 2px rgba(0,0,0,0.3);
+}
+.search-container .active-search:hover{
+  width: 120px;
+  transition: 0.3s width ease-in;
+}
+.search-container .active-search:focus{
+  width: 300px;
+  transition: 0.6s width ease-in;
+}

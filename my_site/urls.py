@@ -21,7 +21,8 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('blog.urls')), # urls that start with https://localhost:8000/
+    path('blog/', include('blog.urls')), # urls that start with https://localhost:8000/blog/
+    path('', include('login.urls')), # urls that start with https://localhost:8000/
     # path('blog/', include('blog.urls')), # urls that start with https://localhost:8000/blog/
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # Django does not serve static files by default, because of security reasons, so you have to explicitly tell it to do so. + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

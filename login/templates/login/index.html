@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+{% comment %} LANDING PAGE FOR PROFILE AND PORTFOLIO 
+
+CHECK OUT FRONTEND MENTOR FOR THE DESIGN AND CODE GUIDELINES
+https://www.frontendmentor.io/challenges/singlepage-developer-portfolio-bBVj2ZPi-x 
+
+THIS WILL NOT BE A LOGIN SITE IT'LL JUST BE A SIMPLE PORTFOLIO AND PROFILE PAGE
+THE PAGE WILL HAVE A PREVIEW OF THE PROJECTS LINKED HERE AS APPS, THE SKILLS USED AND SOCIAL MEDIA LINKS
+{% endcomment %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block page_title %}My Site{% endblock %}</title>
+        {% comment %} <link rel="stylesheet" href="{% static 'styles.css' %}"> {% endcomment %}
+        {% block css_files %}
+        <link rel="stylesheet" href="{% static 'blog/index.css' %}">
+        {% endblock %}
+    </head>
+    <body>
+        <header id="main-navigation">
+            <h1><a href="{% url 'starting_page' %}">Ben's Blog</a></h1>
+            <nav>
+                
+                {% comment %} Will fix this links later {% endcomment %}
+               <a href="{% url 'posts_page' %}" style="margin: 5px;">Login</a>
+               <a href="{% url 'read_later' %}" style="margin: 5px;">Sign Up</a>
+            </nav>
+        </header>
+       <section>
+            <h2> Welcome to my site! </h2>
+            <p> This is a sample website created using Django. </p>
+            <p> You can read my posts, add comments, and save them for later. </p>
+            <a href="{% url 'starting_page' %}">Blog Posts</a>
+            <p> You can sign up to be an author and write your own posts. </p>
+        </section>
+    </body>
+</html>

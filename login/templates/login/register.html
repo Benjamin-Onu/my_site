@@ -1,0 +1,50 @@
+<style>
+    #error-messages {
+        color: red;
+        font-weight: bold;
+    }
+
+    #login-form form {
+        width: 90%;
+        max-width: 30rem;    
+        margin: 3rem auto;
+        padding: 1rem;
+        border-radius: 12px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    }
+</style>
+
+<h1> Sign Up Below </h1>
+{% for message in messages %}
+    <p id="error-messages">{{ message }}</p>
+{% endfor %}
+
+<form method="POST" action="{% url 'register' %}">
+    {% csrf_token %}
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" required><br>
+    <label for="email">Email:</label>
+    <input type="email" name="email" id="email" required><br>
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required><br>
+    <label for="confirm_password">Confirm Password:</label>
+    <input type="password" name="confirm_password" id="confirm_password" required><br>
+    <input type="submit" value="Sign Up">
+</form>
+
+<section id="login-form">
+    <form method="POST" action="{% url 'register' %}">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required><br>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required><br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required><br>
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" name="confirm_password" id="confirm_password" required><br>
+        <input type="submit" value="Sign Up">
+    </form>
+
+</section>

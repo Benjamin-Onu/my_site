@@ -6,17 +6,27 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block page_title %}My Site{% endblock %}</title>
         <link rel="stylesheet" href="{% static 'styles.css' %}">
+        {% comment %} <link rel="stylesheet" href="{% static 'forms.css' %}"> {% endcomment %}
+        <script src="https://kit.fontawesome.com/75e53ee709.js"></script> <!-- Font Awesome CDN -->
+        {% comment %} <script src="{% static 'jquery.js' %}"></script> Using Jquery much later or just vanilla JS{% endcomment %} 
         {% block css_files %}{% endblock %}
     </head>
     <body>
         <header id="main-navigation">
             <h1><a href="{% url 'starting_page' %}">Ben's Blog</a></h1>
             <nav>
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search">
+                    <i id="Search-btn" class="fas fa-search"></i>
+                </div>
                <a href="{% url 'posts_page' %}" style="margin: 5px;">All Posts</a>
                <a href="{% url 'read_later' %}" style="margin: 5px;">Stored Posts</a>
                <a href="{% url 'create_post' %}" style="margin: 5px;">Write Post</a>
             </nav>
         </header>
         {% block content %}{% endblock %}
+        {% block js_files %}
+            <script src="{% static 'script.js' %}"></script>
+        {% endblock %}
     </body>
 </html>

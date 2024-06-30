@@ -28,8 +28,8 @@ class Post(models.Model):
     # image = models.ImageField(upload_to='static/blog/images/') # upload_to is the directory where the image will be saved, upload_to will handle file uploads
     image_name = models.ImageField(upload_to='posts', null=True) # upload_to is the directory where the image will be saved, upload_to will handle file uploads
     # to display the image in the template, we can use the following code: use the url attribute of the image field to display the image in the template. # <img src="{{ post.image.url }}" alt="{{ post.title }}">
-    excerpt = models.CharField(max_length=200)
-    content = models.TextField(validators=[MinLengthValidator(10)]) 
+    excerpt = models.CharField(validators=[MinLengthValidator(50)], max_length=200)
+    content = models.TextField(validators=[MinLengthValidator(50)]) 
     date = models.DateField(auto_now=True)
     slug = models.SlugField(max_length=200, unique=True, blank=True, null=False)
     author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, related_name='posts') # one author can have many posts
