@@ -1,10 +1,26 @@
 {% extends 'blog/base.html' %}
 
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'blog/create-post.css' %}">
+{% endblock %}
+
+{% block title %}Edit Post{% endblock %}
+
 {% block content %}
-    <h1>Edit Post</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
-    </form>
+    <section id="create-post">
+        <h1>Edit Post</h1>
+        <form action="{% url 'edit-post' post.slug %}" method="POST" enctype="multipart/form-data">
+            {% comment %} enctype is used to allow file uploads, It helps you send both text and binary data in the same request. In this case, it is multipart/form-data cause we are uploading an image. {% endcomment %}
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-control {% if field.errors %} errors {% endif %}"> 
+                    {{ field.label_tag }}
+                    {{ field }}
+                </div>
+            {% endfor %}
+            {% comment %} Bug so far the image upload doesn't work. {% endcomment %}
+            <button type="submit">Update Post</button>
+        </form>
+    </section>
+
 {% endblock content %}

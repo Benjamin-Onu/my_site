@@ -19,7 +19,7 @@ class PostForm(forms.ModelForm):
             'excerpt': 'Short Description',
             'content': 'Tell your Story'
         }
-        
+    
         widgets = {
             'tag': forms.CheckboxSelectMultiple(),
         } # This will create a checkbox for each tag in the form view. And it will allow multiple tags to be selected.

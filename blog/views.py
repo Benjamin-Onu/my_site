@@ -227,26 +227,45 @@ class SearchPostsView(View):
 # That's the restriction for now.
 
 # What is an UpdateView? It's a generic view that allows you to update a model instance.
+# Debug this view.
 class EditPostView(UpdateView):
     # We will use this view to edit a post.
     model = Post
     form_class = PostForm
     template_name = 'blog/edit-post.html'
     success_url = reverse_lazy('posts_page')
-
+    # Initial post content to edit
+    
     # We want to render the form with the current data of the post.
-    def get(self, request, *args, **kwargs):
+    def get(self, request, slug):
         post = self.get_object()
-        form = self.get_form()
+
+        # Get the original data of the post to edit.
+        postData = {
+        'title': Post.objects.get(slug=slug).title,
+        'content': Post.objects.get(slug=slug).content,
+        'tag': Post.objects.get(slug=slug).tag.all(),
+        'image_name': Post.objects.get(slug=slug).image_name
+        }
+        form = PostForm(initial=postData)
         context = {
             'form': form,
             'post': post
         }
+        return render(request, self.template_name, context)
 
+    def post(self, request, slug):
+        # This method will be called when the form is submitted.
+        # We will update the post with the new data.
+        form = PostForm(request.POST, request.FILES, instance=self.get_object())
+        form.save() # It will update the post with the new data.
+        return HttpResponseRedirect(reverse('post_detail_page', args=[slug]))
     # This will be a PUT or a PATCH request.
     # It will update the post with the new data.
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
+
+
 
 class DeleteObjectView(View):
     '''
