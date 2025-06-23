@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from os import getenv
+
+# getenv is used to get environment variables,
+# which is a good practice for sensitive information like secret keys, database credentials, etc.
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,11 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-w(7uqui5993w9^@m&ae12l=dmkue(*vxkwsgw3_@-%2nn5qrtk'
+# getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = getenv('IS_DEVELOPMENT', True)
+# False # this exposes sensitive info about your project, so set it to False in production
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    getenv('APP_HOST')
+]
 
 
 # Application definition
@@ -119,6 +127,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'  
+# this is where static files will be collected to when you run collectstatic
+# python manage.py collectstatic
+# if you change any static files in your project, 
+# you need to run this command to update the static files in the STATIC_ROOT directory
 STATIC_URL = 'static/'
 
 # this tells Django to look for static files in the 'static' directory of the project root and the 'static' directory of each app. Mainly for global static files.

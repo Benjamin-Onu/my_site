@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Open+Sans:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Open Sans', 'Lato', sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Lato', sans-serif;
+  font-weight: bold;
+}
+
+#main-navigation {
+  width: 100%;
+  height: 5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#main-navigation a {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  margin: 5px;
+}
+
+#main-navigation a:hover,
+#main-navigation a:active {
+  color: #cf79f1;
+}
+
+#main-navigation h1 a:hover,
+#main-navigation h1 a:active {
+  color: white;
+}
+
+.search-container input{
+  width: 0px;
+  border: none;
+  outline: none;
+}
+.search-container .fas{
+  color: #000;
+  font-size: 1.3rem;
+  padding: 10px 5px;
+}
+.search-container .fas:hover{
+  cursor: pointer;
+  color: #333;
+}
+.search-container .active-search{
+  width: 80px;
+  border-radius: 12px;
+  border: 1px solid gray;
+  padding: 10px 5px;
+  transition: 0.3s width ease-in;
+  font-size: 16px;
+  box-sizing: 0 1px 5px 2px rgba(0,0,0,0.3);
+}
+.search-container .active-search:hover{
+  width: 120px;
+  transition: 0.3s width ease-in;
+}
+.search-container .active-search:focus{
+  width: 300px;
+  transition: 0.6s width ease-in;
+}

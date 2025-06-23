@@ -24,9 +24,15 @@ urlpatterns = [
     path('blog/', include('blog.urls')), # urls that start with https://localhost:8000/blog/
     path('', include('blog.urls')), # urls that start with https://localhost:8000/
     # path('blog/', include('blog.urls')), # urls that start with https://localhost:8000/blog/
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-# Django does not serve static files by default, because of security reasons, so you have to explicitly tell it to do so. + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
++ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+
+
+# Django does not serve static files by default, because of security reasons, so you have to explicitly tell it to do so. 
+# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # This is making django serve media files that are uploaded by users and not in the static folder
-# We are exposing all the files stored in MEDIA_ROOT using the MEDIA_URL
+# We are exposing all the files stored in MEDIA_ROOT using the MEDIA_URL. same applies to static files
+# This is making django serve static files that are in the static folder
 
 
